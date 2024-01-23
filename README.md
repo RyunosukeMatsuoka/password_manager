@@ -7,7 +7,7 @@
 -   サービス名、ユーザー名、パスワードを保存できる。  
 -   サービス名を入力することで、保存した内容を確認できる。  
 
-##事前準備
+## 事前準備
 1. このリポジトリをクローンする。
   ```
   git clone https://github.com/ryunosukematsuoka/password_manager.git
@@ -21,7 +21,7 @@
   chmod 500 ./password_manager.sh
   ```
 
-##使用方法
+## 使用方法
 
 1. 下記のファイルを実行する。
   ```
