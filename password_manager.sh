@@ -8,7 +8,7 @@ addPassword (){
 
         info=サービス名:$service$'\n'ユーザー名:$user$'\n'パスワード:$password
         ##ファイルに出力
-        echo "$info" >> store.txt
+        echo "$info" >> .store.txt
 
         echo "パスワードの追加は成功しました。"
 }
