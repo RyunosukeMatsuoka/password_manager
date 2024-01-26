@@ -48,12 +48,24 @@ function addPassword (){
 	while true
 	do
 		read -p "サービス名を入力してください:" serviceName
+		## 複合化
+        	decrypt
+		## サービス名を変数に格納
+        	S_exists=`grep -x サービス名:$serviceName .store.txt 2> /dev/null`
+		
 		if [ -z "$serviceName" ]; then
 			echo -e "サービス名が未入力です。\n"
+		## 既に入力されたサービス名が存在していた場合
+		elif [ $S_exists ]; then
+			echo -e "そのサービスは既に登録されています。\n"
 		else
 			echo
+			## 暗号化
+			encrypt
 			break
 		fi
+		## 暗号化
+		encrypt
 	done
 	
 	while true
@@ -120,7 +132,7 @@ function getPassword (){
 }
 
 #メイン処理
-echo "パスワードマネージャーへようこそ！"
+echo -e "パスワードマネージャーへようこそ！\n"
 
 ## パスフレーズの登録
 addPassphrase
