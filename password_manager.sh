@@ -33,11 +33,11 @@ function addPassphrase (){
 		echo
 
 		if [ "$passphrase" != "$checkPassphrase" ]; then
-			echo "入力されたパスフレーズが異なっています。"
+			echo -e "入力されたパスフレーズが異なっています。\n"
 		else
-			echo "GnuPGのパスフレーズを登録しました。"
 			echo "$passphrase" > passphrase.txt
 			chmod go-rwx passphrase.txt
+			echo -e "GnuPGのパスフレーズを登録しました。\n"
 			break
 		fi
 	done
@@ -45,11 +45,53 @@ function addPassphrase (){
 
 # Add Password が入力された場合の処理
 function addPassword (){
-	read -p "サービス名を入力してください:" serviceName
-        read -p "ユーザー名を入力してください:" userName
-        read -p "パスワードを入力してください:" password
+	while true
+	do
+		read -p "サービス名を入力してください:" serviceName
+		## 複合化
+        	decrypt
+		## サービス名を変数に格納
+        	S_exists=`grep -x サービス名:$serviceName .store.txt 2> /dev/null`
+		
+		if [ -z "$serviceName" ]; then
+			echo -e "サービス名が未入力です。\n"
+		## 既に入力されたサービス名が存在していた場合
+		elif [ $S_exists ]; then
+			echo -e "そのサービスは既に登録されています。\n"
+		else
+			echo
+			## 暗号化
+			encrypt
+			break
+		fi
+		## 暗号化
+		encrypt
+	done
+	
+	while true
+	do
+		read -p "ユーザー名を入力してください:" userName
+		if [ -z "$userName" ]; then
+                        echo -e "ユーザー名が未入力です。\n"
+                else
+                        echo
+			break
+                fi
+	done
+        
+	while true
+	do
+		read -s -p "パスワードを入力してください:" password
+		if [ -z "$password" ]; then
+                        echo
+			echo -e "パスワードが未入力です。\n"
+                else
+			echo
+                        break
+                fi
+	done
 
-        info=サービス名:$serviceName$'\n'ユーザー名:$userName$'\n'パスワード:$password
+        info=サービス名:$serviceName$'\n'ユーザー名:$userName$'\n'パスワード:$password$'\n'
 	## 複合化
         decrypt
 
@@ -64,12 +106,21 @@ function addPassword (){
 
 # Get Password が入力された場合の処理
 function getPassword (){
-	read -p "サービス名を入力してください：" serviceName
+	while true
+        do
+                read -p "サービス名を入力してください:" serviceName
+                if [ -z "$serviceName" ]; then
+                        echo -e "サービス名が未入力です。\n"
+                else
+			echo
+                        break
+                fi
+        done
         ## 複合化
         decrypt
 
         ## サービス名が保存されていた場合
-	grep -A 2 -x サービス名:$serviceName .store.txt 2> /dev/null
+	grep -A 3 -x サービス名:$serviceName .store.txt 2> /dev/null
 
 	##サービス名が保存されていなかった場合
 	if [ $? = 1 ]; then
@@ -81,7 +132,7 @@ function getPassword (){
 }
 
 #メイン処理
-echo "パスワードマネージャーへようこそ！"
+echo -e "パスワードマネージャーへようこそ！\n"
 
 ## パスフレーズの登録
 addPassphrase
